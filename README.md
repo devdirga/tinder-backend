@@ -1,27 +1,3 @@
-## Project Structure
-
-```
-.
-
-├── config
-│   └── config.go        # Configuration settings (e.g., database, environment variables).
-├── internal
-│   ├── auth             # Authentication module (e.g., login, registration).
-│   ├── profile          # User profile module.
-│   ├── swipe            # Swipe functionality.
-│   ├── match            # Matchmaking logic.
-│   └── middleware       # Common middleware (e.g., authentication, logging).
-├── pkg
-│   └── utils            # Utility functions and helpers.
-├── migrations
-│   └── sql              # Database migration files.
-├── test
-│   └── unittest         # Integration tests.
-├── go.mod               # Go module file.
-├── go.sum               # Dependency lock file.
-└── README.md            # Project documentation.
-```
-
 ## Key Modules
 
 ### Authentication (`auth`)
@@ -30,4 +6,27 @@ Handles user registration, login, and session management. Utilizes JWT for secur
 **Endpoints:**
 - `POST /signup`: User registration.
 - `POST /signin`: User login.
-- `GET  /me`: Retrieve logged-in user details.
+- `GET  /verification/:token`: Verification registration.
+
+### User Profile (`profile`)
+Manages user profiles, including viewing and editing personal information.
+
+**Endpoints:**
+- `GET /me`: Retrieve user profile.
+- `POST /me`: Update user profile.
+
+### Swipe Data (`swipe`)
+Implements the swiping feature, allowing users to get profile.
+
+**Endpoints:**
+- `GET /swipe`: Load one data profile.
+
+### Swiping (`swipe`)
+Implements the swiping feature, allowing users to like or pass on other users.
+
+**Endpoints:**
+- `POST /swipe`: Like/Pass a user.
+
+### Matchmaking (`match`)
+Handles the logic for determining matches between users.
+And send email notification
