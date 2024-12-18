@@ -68,8 +68,8 @@ jobs:
           # Update the binary
           # mkdir -p /root/go/gotinder
           # cp /home/runner/work/tinder-backend/tinder-backend /root/go/gotinder/
-          mv /root/tinder-backend /root/go/gotinder/
-          chmod +x /root/go/gotinder/tinder-backend
+          # mv /root/tinder-backend /root/go/gotinder/
+          chmod +x /root/github/workspace/tinder-backend
 
           # Restart the application
-          nohup /root/go/gotinder/tinder-backend > /root/go/gotinder/app.log 2>&1 &
+          nohup /root/github/workspace/tinder-backend > /root/go/gotinder/app.log 2>&1 &
