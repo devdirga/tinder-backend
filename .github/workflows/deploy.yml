@@ -38,6 +38,8 @@ jobs:
       uses: actions/download-artifact@v3
       with:
         name: tinder-backend
+    - name: List files in runner workspace
+        run: ls -la /home/runner/work/tinder-backend/
     - name: Deploy to VPS
       uses: appleboy/ssh-action@v0.1.8
       with:
@@ -45,6 +47,8 @@ jobs:
         username: ${{ secrets.VPS_USER }}
         key: ${{ secrets.VPS_PRIVATE_KEY }}
         port: 22
+        source: /home/runner/work/tinder-backend/tinder-backend
+        target: /root/go/gotinder/
         script: |
           # Stop the running application
           pkill tinder-backend || true
