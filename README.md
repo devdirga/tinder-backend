@@ -90,5 +90,3 @@ VPS_USER=
 Setup your path in your server by change in file ```bash .github/workflows/deploy.yml  ```
 
 Every time you commit to the repository, GitHub Actions will build and deploy to your server, using SSH to copy the Golang binary file.
-
-## Details on the structure of the service
