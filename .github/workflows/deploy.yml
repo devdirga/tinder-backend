@@ -38,8 +38,7 @@ jobs:
       uses: actions/download-artifact@v3
       with:
         name: tinder-backend
-    - name: List files in runner workspace
-        run: ls -la /home/runner/work/tinder-backend/
+    
     - name: Deploy to VPS
       uses: appleboy/ssh-action@v0.1.8
       with:
