@@ -75,3 +75,20 @@ Run the backend service:
 go run main.go
 ```
 The service will run on `http://localhost:5000` by default.
+
+## Deployment
+
+CI/CD using Github Actions
+
+Create new repository secrets to add your server access
+```bash
+VPS_HOST=
+VPS_PRIVATE_KEY=
+VPS_USER=
+```
+
+Setup your path in your server by change in file ```bash .github/workflows/deploy.yml  ```
+
+Every time you commit to the repository, GitHub Actions will build and deploy to your server, using SSH to copy the Golang binary file.
+
+## Details on the structure of the service
