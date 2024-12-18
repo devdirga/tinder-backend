@@ -1,0 +1,8 @@
+{
+  "DB": "mongodb://localhost:27017",
+  "IsDebug": true,
+  "IsConcurrent":true,
+  "Secret": "secret",
+  "GoogleSmtpKey": "azdg rkiv wnqe vuil ",
+  "URLFront": "http://localhost:5000/"
+}
