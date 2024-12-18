@@ -45,7 +45,33 @@ Ensure you have the following installed:
 
 ### Clone the Repository
 ```bash
-git clone https://github.com/yourusername/tinder-service.git
+git clone https://github.com/devdirga/tinder-backend.git
 cd tinder-service
 ```
 ---
+
+### Environment Configuration
+Create a `.config.json` file in the project root and populate it with the following variables:
+```bash
+{
+  "DB": "host=localhost user=postgres password=mysecretpassword dbname=tinder port=5432 sslmode=disable",
+  "IsDebug": true,
+  "IsQueue": false,
+  "IsConcurrent":true,
+  "Secret": "secret",
+  "GoogleSmtpKey": "azdg rkiv wnqe vuil ",
+  "URL": "http://localhost:5000/"
+}
+```
+
+### Backend Setup
+Install Go dependencies:
+```bash
+go mod tidy
+```
+
+Run the backend service:
+```bash
+go run main.go
+```
+The service will run on `http://localhost:5000` by default.
