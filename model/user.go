@@ -47,7 +47,9 @@ func GetUserByEmail(email string) (*User, error) {
 		u.email,
 		u.subscription_type,
 		u.created_at,
-		COALESCE(ds.swipe_count, 0) AS swipe_count 
+		COALESCE(ds.swipe_count, 0) AS swipe_count,
+		u.bio,
+		u.profile_image
 		FROM users u
 		left join daily_swipes ds on (ds.user_id = u.id AND ds.swipe_date = NOW()::DATE) 
 		WHERE email = $1`
@@ -57,7 +59,10 @@ func GetUserByEmail(email string) (*User, error) {
 		&user.Email,
 		&user.SubscriptionType,
 		&user.CreatedAt,
-		&user.SwipeCount)
+		&user.SwipeCount,
+		&user.Bio,
+		&user.ProfileImage,
+	)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, nil
@@ -73,6 +78,19 @@ func UserUpdate(user User) error {
 		email_verif = $2
 		WHERE id = $3`
 	err := DB.QueryRow(query, user.Email, util.GetNow(), user.ID).Err()
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func UserUpdateByEmail(user User) error {
+	query := `UPDATE users 
+		SET 
+		bio = $1,
+		profile_image = $2
+		WHERE email = $3`
+	err := DB.QueryRow(query, user.Bio, user.ProfileImage, user.Email).Err()
 	if err != nil {
 		return err
 	}

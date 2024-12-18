@@ -31,6 +31,7 @@ func setupTestApp() *fiber.App {
 		SigningKey: jwtware.SigningKey{Key: []byte(config.GetConf().Secret)},
 	}))
 	route.UserRoute(app)
+	route.ProfileRoute(app)
 	route.SwipeRoute(app)
 	return app
 }
@@ -62,6 +63,30 @@ func TestAuthSignin(t *testing.T) {
 	req.Header.Set("Content-Type", "application/json")
 	resp, _ := app.Test(req)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
+}
+
+func TestProfileMe(t *testing.T) {
+	app := setupTestApp()
+	req := httptest.NewRequest(http.MethodGet, "/me", nil)
+	req.Header.Set("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImRpcmdhbnRvcm8uZGV2ZWxvcGVyQGdtYWlsLmNvbSIsImV4cCI6MTc2NTU4MTM0NCwiaWQiOiI5MWY2ZTI5Yy1iMjE5LTQ5NTMtYTIxNi1hNjk2NTk4OWMwYWUiLCJ1c2VybmFtZSI6ImRpcmdhIn0.7j-86pdaqufmdDba4RpG6k9PIe1E58gdlxblUGjW-PI")
+	req.Header.Set("Content-Type", "application/json")
+	resp, _ := app.Test(req)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+}
+
+func TestProfileUpdate(t *testing.T) {
+	app := setupTestApp()
+	user := model.User{
+		Bio:          "Developer",
+		ProfileImage: "https://avatars.githubusercontent.com/u/60421154?s=400&u=b372e9dc38e5b5e94da44adebc7aa629a56f8926&v=4",
+	}
+	body, _ := json.Marshal(user)
+	req := httptest.NewRequest(http.MethodPost, "/me", bytes.NewReader(body))
+	req.Header.Set("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImRpcmdhbnRvcm8uZGV2ZWxvcGVyQGdtYWlsLmNvbSIsImV4cCI6MTc2NTU4MTM0NCwiaWQiOiI5MWY2ZTI5Yy1iMjE5LTQ5NTMtYTIxNi1hNjk2NTk4OWMwYWUiLCJ1c2VybmFtZSI6ImRpcmdhIn0.7j-86pdaqufmdDba4RpG6k9PIe1E58gdlxblUGjW-PI")
+	req.Header.Set("Content-Type", "application/json")
+	resp, _ := app.Test(req)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+
 }
 
 func TestGetSwipe(t *testing.T) {

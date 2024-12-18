@@ -25,6 +25,7 @@ func main() {
 		SigningKey: jwtware.SigningKey{Key: []byte(config.GetConf().Secret)},
 	}))
 	route.UserRoute(app)
+	route.ProfileRoute(app)
 	route.SwipeRoute(app)
 	log.Fatal(app.Listen(":5000"))
 }

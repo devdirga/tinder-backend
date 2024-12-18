@@ -13,7 +13,6 @@ func SwipeCreate(c *fiber.Ctx) error {
 	user := c.Locals("user").(*jwt.Token)
 	claims := user.Claims.(jwt.MapClaims)
 	id := claims["id"].(string)
-	_ = id
 
 	var swipe model.Swipe
 	if err := c.BodyParser(&swipe); err != nil {
@@ -28,8 +27,6 @@ func SwipeCreate(c *fiber.Ctx) error {
 	return c.Status(201).JSON(swipe)
 }
 
-// TODO
-// provide only 1 data
 func SwipeData(c *fiber.Ctx) error {
 	user := c.Locals("user").(*jwt.Token)
 	claims := user.Claims.(jwt.MapClaims)
