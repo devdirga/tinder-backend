@@ -21,13 +21,13 @@ jobs:
     - name: Build the Application
       run: |
         go mod tidy
-        go build -o gotinder
+        go build -o tinder-backend
     
     - name: Upload Binary
       uses: actions/upload-artifact@v3
       with:
-        name: gotinder
-        path: ./gotinder
+        name: tinder-backend
+        path: ./tinder-backend
 
   deploy:
     runs-on: ubuntu-20.04
@@ -37,7 +37,7 @@ jobs:
     - name: Download Binary
       uses: actions/download-artifact@v3
       with:
-        name: gotinder
+        name: tinder-backend
     - name: Deploy to VPS
       uses: appleboy/ssh-action@v0.1.8
       with:
@@ -47,12 +47,12 @@ jobs:
         port: 22
         script: |
           # Stop the running application
-          pkill gotinder || true
+          pkill tinder-backend || true
 
           # Update the binary
           mkdir -p /root/go/gotinder
-          cp gotinder /root/go/gotinder/
-          chmod +x /root/go/gotinder/gotinder
+          cp tinder-backend /root/go/gotinder/
+          chmod +x /root/go/gotinder/tinder-backend
 
           # Restart the application
-          nohup /root/go/gotinder/gotinder > /root/go/gotinder/app.log 2>&1 &
+          nohup /root/go/gotinder/tinder-backend > /root/go/gotinder/app.log 2>&1 &
