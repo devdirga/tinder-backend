@@ -46,7 +46,7 @@ jobs:
         key: ${{ secrets.VPS_PRIVATE_KEY }}
         port: 22
         script: |
-          # Stop the running application
+          # Stop the running applications
           pkill gotinder || true
 
           # Update the binary
