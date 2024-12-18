@@ -1,4 +1,4 @@
-## Key Modules
+## Details on the structure of the service
 
 ### Authentication (`auth`)
 Handles user registration, login, and session management. Utilizes JWT for secure authentication.
