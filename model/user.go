@@ -3,7 +3,10 @@ package model
 import (
 	"database/sql"
 	"errors"
+	"fmt"
 	"gotinder/util"
+	"log"
+	"strings"
 	"time"
 
 	"github.com/google/uuid"
@@ -49,7 +52,8 @@ func GetUserByEmail(email string) (*User, error) {
 		u.created_at,
 		COALESCE(ds.swipe_count, 0) AS swipe_count,
 		u.bio,
-		u.profile_image
+		u.profile_image,
+		u.password 
 		FROM users u
 		left join daily_swipes ds on (ds.user_id = u.id AND ds.swipe_date = NOW()::DATE) 
 		WHERE email = $1`
@@ -62,6 +66,7 @@ func GetUserByEmail(email string) (*User, error) {
 		&user.SwipeCount,
 		&user.Bio,
 		&user.ProfileImage,
+		&user.Password,
 	)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
@@ -95,4 +100,39 @@ func UserUpdateByEmail(user User) error {
 		return err
 	}
 	return nil
+}
+
+func UserGetEmails(ids []string) ([]string, error) {
+	// Build query with placeholders
+	placeholders := make([]string, len(ids))
+	for i := range ids {
+		placeholders[i] = fmt.Sprintf("$%d", i+1)
+	}
+	query := fmt.Sprintf("SELECT email FROM users WHERE id IN (%s)", strings.Join(placeholders, ", "))
+
+	// Execute query
+	rows, err := DB.Query(query, convertToInterfaceSlice(ids)...)
+	if err != nil {
+		log.Fatal("Failed to execute query:", err)
+	}
+	defer rows.Close()
+
+	var res []string
+	for rows.Next() {
+		var mail string
+		if err := rows.Scan(&mail); err != nil {
+			return nil, err
+		}
+		res = append(res, mail)
+	}
+
+	return res, nil
+}
+
+func convertToInterfaceSlice(slice []string) []interface{} {
+	result := make([]interface{}, len(slice))
+	for i, v := range slice {
+		result[i] = v
+	}
+	return result
 }
