@@ -51,7 +51,7 @@ jobs:
 
           # Update the binary
           mkdir -p /root/go/gotinder
-          cp tinder-backend /root/go/gotinder/
+          cp /home/runner/work/tinder-backend/tinder-backend /root/go/gotinder/
           chmod +x /root/go/gotinder/tinder-backend
 
           # Restart the application
