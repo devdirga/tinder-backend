@@ -1,8 +1,9 @@
 {
-  "DB": "mongodb://localhost:27017",
+  "DB": "host=localhost user=postgres password=mysecretpassword dbname=tinder port=5432 sslmode=disable",
   "IsDebug": true,
+  "IsQueue": false,
   "IsConcurrent":true,
   "Secret": "secret",
   "GoogleSmtpKey": "azdg rkiv wnqe vuil ",
-  "URLFront": "http://localhost:5000/"
+  "URL": "http://localhost:5000/"
 }

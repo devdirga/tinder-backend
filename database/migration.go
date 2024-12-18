@@ -1,59 +1,40 @@
 package database
 
 import (
+	"gotinder/config"
 	"log"
-	"time"
 
-	"github.com/google/uuid"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
-type SubscriptionType string
-
-const (
-	FreeSubscription    SubscriptionType = "free"
-	PremiumSubscription SubscriptionType = "premium"
-)
-
-type User struct {
-	ID               uuid.UUID        `gorm:"type:uuid;primaryKey;default:uuid_generate_v4()" json:"id"`
-	Name             string           `gorm:"type:varchar(255);not null" json:"name"`
-	Email            string           `gorm:"type:varchar(255);unique;not null" json:"email"`
-	Bio              string           `gorm:"type:text" json:"bio,omitempty"`
-	ProfileImage     string           `gorm:"type:text" json:"profile_image,omitempty"`
-	SubscriptionType SubscriptionType `gorm:"type:subscription_type;default:'free'" json:"subscription_type"`
-	CreatedAt        time.Time        `gorm:"autoCreateTime" json:"created_at"`
-	UpdatedAt        time.Time        `gorm:"autoUpdateTime" json:"updated_at"`
-}
-
 func Migrate() {
-	dsn := "host=localhost user=postgres password=mysecretpassword dbname=tinder port=5432 sslmode=disable"
+	dsn := config.GetConf().DB
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatal("Failed to connect to the database:", err)
 	}
-
-	// Create the custom enum type
 	err = db.Exec(`
+		-- CREATE ENUM subscription_type
 		DO $$ 
 			BEGIN
-				-- Check if the type already exists
 				IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'subscription_type') THEN
-						-- Create the enum type if it doesn't exist
-						CREATE TYPE subscription_type AS ENUM ('free', 'premium');
+					CREATE TYPE subscription_type AS ENUM ('free', 'premium');
 				END IF;
 		END $$;
 
+		-- CREATE ENUM swipe_type
 		DO $$ 
 			BEGIN
 				IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'swipe_type') THEN
-						CREATE TYPE swipe_type AS ENUM ('like', 'pass');
+					CREATE TYPE swipe_type AS ENUM ('like', 'pass');
 				END IF;
 		END $$;
 
+		-- CREATE EXT 
 		CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-
+		
+		--CREATE TABLE users
 		CREATE TABLE IF NOT EXISTS public.users (
 			id uuid NOT NULL DEFAULT uuid_generate_v4(),
 			username varchar(255) NOT NULL,
@@ -70,6 +51,7 @@ func Migrate() {
 			CONSTRAINT users_pkey PRIMARY KEY (id)
 		);
 
+		-- CREATE TABLE verification_token
 		CREATE TABLE IF NOT EXISTS public.verification_token (
 			id uuid NOT NULL DEFAULT uuid_generate_v4(),
 			email varchar(255) NOT NULL,
@@ -78,6 +60,7 @@ func Migrate() {
 			CONSTRAINT verification_token_pkey PRIMARY KEY (id)
 		);
 
+		-- CREATE TABLE swipes
 		CREATE TABLE IF NOT EXISTS swipes (
 			id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
 			user_id UUID NOT NULL,
@@ -90,6 +73,7 @@ func Migrate() {
 			CONSTRAINT unique_swipe UNIQUE (user_id, target_user_id, created_at_date )
 		);
 
+		-- CREATE TABLE daily_swipes
 		CREATE TABLE IF NOT EXISTS daily_swipes (
 			id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
 			user_id UUID NOT NULL,
@@ -97,6 +81,17 @@ func Migrate() {
 			swipe_count INT NOT NULL,
 			CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
 			CONSTRAINT unique_daily_swipes UNIQUE (user_id, swipe_date)
+		);
+
+		-- CREATE TABLE swipe_history
+		CREATE TABLE IF NOT EXISTS swipe_history (
+			id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+			user_id UUID NOT NULL,
+			target_user_id UUID NOT NULL,
+			swipe_date DATE NOT NULL,
+			CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+			CONSTRAINT fk_target_user FOREIGN KEY (target_user_id) REFERENCES users(id) ON DELETE cascade,
+			CONSTRAINT unique_swipe_history UNIQUE (user_id, target_user_id, swipe_date)
 		);
 
 		CREATE table IF NOT EXISTS matches (
@@ -112,10 +107,5 @@ func Migrate() {
 	if err != nil {
 		log.Fatalf("Failed to create enum type: %v", err)
 	}
-
-	// err = db.AutoMigrate(&User{})
-	// if err != nil {
-	// 	log.Fatal("Migration failed:", err)
-	// }
 	log.Println("Migration completed successfully.")
 }

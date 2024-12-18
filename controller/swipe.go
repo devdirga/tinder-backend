@@ -28,6 +28,8 @@ func SwipeCreate(c *fiber.Ctx) error {
 	return c.Status(201).JSON(swipe)
 }
 
+// TODO
+// provide only 1 data
 func SwipeData(c *fiber.Ctx) error {
 	user := c.Locals("user").(*jwt.Token)
 	claims := user.Claims.(jwt.MapClaims)
@@ -37,5 +39,10 @@ func SwipeData(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(400).SendString("Failed to parse request body")
 	}
+
+	if len(data) > 0 {
+		return util.SendRes(c, err, data[0])
+	}
+
 	return util.SendRes(c, err, data)
 }

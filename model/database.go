@@ -2,6 +2,7 @@ package model
 
 import (
 	"database/sql"
+	"gotinder/config"
 	"log"
 
 	_ "github.com/lib/pq"
@@ -11,8 +12,7 @@ var DB *sql.DB
 
 func InitDB() {
 	var err error
-	connStr := "host=localhost user=postgres password=mysecretpassword dbname=tinder port=5432 sslmode=disable"
-	DB, err = sql.Open("postgres", connStr)
+	DB, err = sql.Open("postgres", config.GetConf().DB)
 	if err != nil {
 		log.Fatal("Failed to connect to the database:", err)
 	}

@@ -10,10 +10,11 @@ import (
 type Conf struct {
 	DB            string
 	IsDebug       bool
+	IsQueue       bool
 	IsConcurrent  bool
 	Secret        string
 	GoogleSmtpKey string
-	URLFront      string
+	URL           string
 }
 
 var conf Conf

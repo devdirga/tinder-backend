@@ -1,7 +1,6 @@
 package model
 
 import (
-	"log"
 	"time"
 
 	"github.com/google/uuid"
@@ -16,13 +15,18 @@ type Swipe struct {
 }
 
 func SwipeCreate(swipe Swipe) error {
-	query := `INSERT INTO swipes (user_id, target_user_id, swipe_type) VALUES ($1, $2, $3)`
-	err := DB.QueryRow(query, swipe.UserID, swipe.TargetUserID, swipe.SwipeType).Err()
-	if err != nil {
-		log.Println("Error creating swape:", err)
+	query := `INSERT INTO swipes
+		(user_id,target_user_id,swipe_type)
+		VALUES
+		($1, $2, $3)`
+	if err := DB.QueryRow(query, swipe.UserID, swipe.TargetUserID, swipe.SwipeType).Err(); err != nil {
 		return err
 	}
 	SwipeDailyCreate(Swipe{UserID: swipe.UserID})
+	SwipeHistoryCreate(SwipeHistory{
+		UserID:       swipe.UserID,
+		TargetUserID: swipe.TargetUserID,
+	})
 	return nil
 }
 
@@ -32,9 +36,9 @@ func SwipeData(user_id string) ([]User, error) {
 		FROM users 
 		WHERE id NOT IN (
 			SELECT target_user_id 
-			FROM swipes 
+			FROM swipe_history 
 			WHERE user_id = $1 
-			AND DATE(created_at) = CURRENT_DATE
+			AND DATE(swipe_date) = CURRENT_DATE
 		)
 		AND id != $2`
 	rows, err := DB.Query(query, user_id, user_id)
@@ -43,6 +47,7 @@ func SwipeData(user_id string) ([]User, error) {
 	}
 
 	defer rows.Close()
+
 	for rows.Next() {
 		var user User
 		if err := rows.Scan(&user.ID, &user.Username, &user.Bio, &user.ProfileImage); err != nil {
