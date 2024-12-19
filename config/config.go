@@ -16,6 +16,8 @@ type Conf struct {
 	GoogleSmtpKey string
 	URL           string
 	Quota         int
+	KafkaUrl      string
+	KafkaTopic    string
 }
 
 var conf Conf

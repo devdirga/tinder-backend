@@ -3,20 +3,16 @@ package consumer
 import (
 	"context"
 	"encoding/json"
+	"gotinder/config"
 	"gotinder/util"
 
 	"github.com/segmentio/kafka-go"
 )
 
-const (
-	kafkaTopic     = "test-topic"
-	kafkaBrokerURL = "localhost:9092"
-)
-
 func ConsumeMessages() error {
 	reader := kafka.NewReader(kafka.ReaderConfig{
-		Brokers: []string{kafkaBrokerURL},
-		Topic:   kafkaTopic,
+		Brokers: []string{config.GetConf().KafkaUrl},
+		Topic:   config.GetConf().KafkaTopic,
 		GroupID: "example-group",
 	})
 	defer reader.Close()

@@ -3,21 +3,17 @@ package producer
 import (
 	"context"
 	"encoding/json"
+	"gotinder/config"
 	"gotinder/util"
 	"time"
 
 	"github.com/segmentio/kafka-go"
 )
 
-const (
-	kafkaTopic     = "test-topic"
-	kafkaBrokerURL = "localhost:9092"
-)
-
 func ProducerMessage(message util.RequestMessage) error {
 	writer := kafka.Writer{
-		Addr:         kafka.TCP(kafkaBrokerURL),
-		Topic:        kafkaTopic,
+		Addr:         kafka.TCP(config.GetConf().KafkaUrl),
+		Topic:        config.GetConf().KafkaTopic,
 		Balancer:     &kafka.LeastBytes{},
 		BatchTimeout: 10 * time.Millisecond,
 	}
