@@ -61,7 +61,9 @@ Create a `.config.json` file in the project root and populate it with the follow
   "Secret": "secret",
   "GoogleSmtpKey": "azdg rkiv wnqe vuil ",
   "URL": "http://localhost:5000/",
-  "Quota": 10
+  "Quota": 10,
+  "KafkaUrl": "localhost:9092",
+  "KafkaTopic": "test-topic"
 }
 ```
 
