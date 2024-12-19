@@ -91,3 +91,47 @@ VPS_USER=
 Setup your path in your server by change in file ```bash .github/workflows/deploy.yml  ```
 
 Every time you commit to the repository, GitHub Actions will build and deploy to your server, using SSH to copy the Golang binary file.
+
+## Implementation of messsage broker (KafKa)
+1. Create a docker-compose.yml file
+```bash
+version: '3.8'
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    container_name: zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2181:2181"
+
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    container_name: kafka
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+```
+
+2. Run the following command in the directory where the docker-compose.yml is located:
+```bash
+docker-compose up -d
+```
+
+3. Access the Kafka container:
+```bash
+docker exec -it kafka bash
+```
+
+4. Create a topic:
+```bash
+kafka-topics --create --topic test-topic --bootstrap-server localhost:9092 --replication-factor 1 --partitions 1
+```
+
