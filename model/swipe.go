@@ -4,6 +4,7 @@ import (
 	"gotinder/config"
 	"gotinder/producer"
 	"gotinder/util"
+	"log"
 	"time"
 
 	"github.com/google/uuid"
@@ -32,9 +33,9 @@ func SwipeCreate(swipe Swipe) error {
 			FROM swipes 
 			WHERE target_user_id = $1 
 			AND swipe_type = 'like'`
-		if err := DB.QueryRow(qCheckLike, swipe.UserID).Scan(&matchx); err != nil {
-			return err
-		}
+
+		DB.QueryRow(qCheckLike, swipe.UserID).Scan(&matchx)
+
 		if matchx == 1 {
 			qInsert := `INSERT INTO matches
 			(user_id, matched_user_id, created_at)
@@ -45,11 +46,11 @@ func SwipeCreate(swipe Swipe) error {
 			}
 
 			if config.GetConf().IsQueue {
-				// using queue
 				ids := []string{swipe.UserID.String(), swipe.TargetUserID.String()}
 				emails, err := UserGetEmails(ids)
 				if err == nil {
 					for _, email := range emails {
+						log.Println("queue email", email)
 						req := util.RequestMessage{
 							To:      email,
 							Subject: "Confirm Email",
