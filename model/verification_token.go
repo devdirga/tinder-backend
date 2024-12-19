@@ -3,6 +3,7 @@ package model
 import (
 	"errors"
 	"gotinder/config"
+	"gotinder/producer"
 	"gotinder/util"
 	"time"
 
@@ -31,9 +32,14 @@ func VerifTokenCreate(vtoken VerifToken) error {
 	}
 
 	if config.GetConf().IsQueue {
-		// TODO
-		// send to queue
-		// provide consumer
+		conf := config.GetConf()
+		req := util.RequestMessage{
+			To:      vtoken.Email,
+			Subject: "Confirm Email",
+			Message: conf.URL + "verification/" + token,
+		}
+		err = producer.ProducerMessage(req)
+
 	} else {
 		conf := config.GetConf()
 		err = util.SendMail(map[string]interface{}{

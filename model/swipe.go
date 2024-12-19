@@ -2,6 +2,7 @@ package model
 
 import (
 	"gotinder/config"
+	"gotinder/producer"
 	"gotinder/util"
 	"time"
 
@@ -42,10 +43,22 @@ func SwipeCreate(swipe Swipe) error {
 			if err := DB.QueryRow(qInsert, swipe.UserID, swipe.TargetUserID).Err(); err != nil {
 				return err
 			}
-			// TODO
-			// send notification mail
+
 			if config.GetConf().IsQueue {
 				// using queue
+				ids := []string{swipe.UserID.String(), swipe.TargetUserID.String()}
+				emails, err := UserGetEmails(ids)
+				if err == nil {
+					for _, email := range emails {
+						req := util.RequestMessage{
+							To:      email,
+							Subject: "Confirm Email",
+							Message: "Congratulation",
+						}
+						producer.ProducerMessage(req)
+					}
+				}
+
 			} else {
 				ids := []string{swipe.UserID.String(), swipe.TargetUserID.String()}
 				emails, err := UserGetEmails(ids)

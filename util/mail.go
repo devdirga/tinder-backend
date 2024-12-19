@@ -14,6 +14,12 @@ const CONFIG_AUTH_EMAIL = "f88matew@gmail.com"
 
 var CONFIG_AUTH_PASSWORD = ""
 
+type RequestMessage struct {
+	To      string `json:"to"`
+	Subject string `json:"subject"`
+	Message string `json:"message"`
+}
+
 func SendMail(param map[string]interface{}) error {
 	CONFIG_AUTH_PASSWORD = config.GetConf().GoogleSmtpKey
 	mailer := gomail.NewMessage()

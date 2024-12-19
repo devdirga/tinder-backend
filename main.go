@@ -2,6 +2,7 @@ package main
 
 import (
 	"gotinder/config"
+	"gotinder/consumer"
 	"gotinder/database"
 	"gotinder/middleware"
 	"gotinder/model"
@@ -27,5 +28,15 @@ func main() {
 	route.UserRoute(app)
 	route.ProfileRoute(app)
 	route.SwipeRoute(app)
+
+	if config.GetConf().IsQueue {
+		// Start Kafka consumer
+		go func() {
+			if err := consumer.ConsumeMessages(); err != nil {
+				log.Fatalf("Error starting consumer: %v", err)
+			}
+		}()
+	}
+
 	log.Fatal(app.Listen(":5000"))
 }

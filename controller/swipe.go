@@ -38,11 +38,8 @@ func SwipeData(c *fiber.Ctx) error {
 	}
 
 	if len(data) > 0 {
-		// for _, v := range data {
-		// 	if v.Email == "ahmad21@gmail.com" {
-		// 		return util.SendRes(c, err, v)
-		// 	}
-		// }
+		// TODO
+		// make randomize profile show
 		return util.SendRes(c, err, data[0])
 	}
 

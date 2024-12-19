@@ -15,6 +15,7 @@ type Conf struct {
 	Secret        string
 	GoogleSmtpKey string
 	URL           string
+	Quota         int
 }
 
 var conf Conf

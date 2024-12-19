@@ -1,9 +1,10 @@
 {
   "DB": "host=localhost user=postgres password=mysecretpassword dbname=tinder port=5432 sslmode=disable",
   "IsDebug": true,
-  "IsQueue": false,
+  "IsQueue": true,
   "IsConcurrent":true,
   "Secret": "secret",
   "GoogleSmtpKey": "azdg rkiv wnqe vuil ",
-  "URL": "http://localhost:5000/"
+  "URL": "http://localhost:5000/",
+  "Quota": 10
 }

@@ -47,7 +47,7 @@ func CheckSwipeLimit(c *fiber.Ctx) error {
 				"error": "User not found",
 			})
 		}
-		if user.SubscriptionType == "free" && user.SwipeCount >= 10 {
+		if user.SubscriptionType == "free" && user.SwipeCount >= config.GetConf().Quota {
 			return c.Status(fiber.StatusForbidden).JSON(fiber.Map{
 				"error": "Swipe limit reached for free subscription",
 			})
