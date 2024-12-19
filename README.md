@@ -60,7 +60,8 @@ Create a `.config.json` file in the project root and populate it with the follow
   "IsConcurrent":true,
   "Secret": "secret",
   "GoogleSmtpKey": "azdg rkiv wnqe vuil ",
-  "URL": "http://localhost:5000/"
+  "URL": "http://localhost:5000/",
+  "Quota": 10
 }
 ```
 
