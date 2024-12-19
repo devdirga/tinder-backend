@@ -56,7 +56,7 @@ Create a `.config.json` file in the project root and populate it with the follow
 {
   "DB": "host=localhost user=postgres password=mysecretpassword dbname=tinder port=5432 sslmode=disable",
   "IsDebug": true,
-  "IsQueue": false,
+  "IsQueue": true,
   "IsConcurrent":true,
   "Secret": "secret",
   "GoogleSmtpKey": "azdg rkiv wnqe vuil ",
